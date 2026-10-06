@@ -1,0 +1,103 @@
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-door-open"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/ruangan"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/ruangan" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idRuangan}">
+
+        <div class="col-md-6">
+            <label class="form-label" for="namaRuangan">Nama Ruangan <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.namaRuangan ? 'is-invalid' : ''}" id="namaRuangan" name="namaRuangan"
+                   value="<c:out value='${data.namaRuangan}'/>" maxlength="100" placeholder="Contoh: Melati 1" required>
+            <div class="invalid-feedback"><c:out value="${errors.namaRuangan}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="jenisRuangan">Jenis Ruangan <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.jenisRuangan ? 'is-invalid' : ''}" id="jenisRuangan" name="jenisRuangan" required>
+                <option value="">Pilih jenis ruangan</option>
+                <c:forEach items="${['Kelas I','Kelas II','Kelas III','ICU','Anak','Isolasi']}" var="j">
+                    <option value="${j}" <c:if test="${data.jenisRuangan eq j}">selected</c:if>>${j}</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.jenisRuangan}" /></div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="nomorKamar">Nomor Kamar <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.nomorKamar ? 'is-invalid' : ''}" id="nomorKamar" name="nomorKamar"
+                   value="<c:out value='${data.nomorKamar}'/>" maxlength="30" placeholder="Contoh: A-101" required>
+            <div class="invalid-feedback"><c:out value="${errors.nomorKamar}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="lantai">Lantai <span class="wajib">*</span></label>
+            <input type="number" class="form-control ${not empty errors.lantai ? 'is-invalid' : ''}" id="lantai" name="lantai"
+                   value="<c:out value='${data.lantai}'/>" min="1" step="1" placeholder="Contoh: 2" required>
+            <div class="invalid-feedback"><c:out value="${errors.lantai}" /></div>
+            <div class="form-text">Nomor lantai minimal 1.</div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="kapasitas">Kapasitas <span class="wajib">*</span></label>
+            <input type="number" class="form-control ${not empty errors.kapasitas ? 'is-invalid' : ''}" id="kapasitas" name="kapasitas"
+                   value="<c:out value='${data.kapasitas}'/>" min="1" step="1" placeholder="Contoh: 4" required>
+            <div class="invalid-feedback"><c:out value="${errors.kapasitas}" /></div>
+            <div class="form-text">Jumlah tempat tidur dalam ruangan ini.</div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="jumlahTerisi">Jumlah Terisi</label>
+            <input type="number" class="form-control ${not empty errors.jumlahTerisi ? 'is-invalid' : ''}" id="jumlahTerisi" name="jumlahTerisi"
+                   value="<c:out value='${data.jumlahTerisi}'/>" min="0" step="1" placeholder="Contoh: 2">
+            <div class="invalid-feedback"><c:out value="${errors.jumlahTerisi}" /></div>
+            <div class="form-text">Kosongkan bila belum ada pasien yang menempati kamar ini.</div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="tarifPerHari">Tarif per Hari <span class="wajib">*</span></label>
+            <input type="number" class="form-control ${not empty errors.tarifPerHari ? 'is-invalid' : ''}" id="tarifPerHari" name="tarifPerHari"
+                   value="<c:out value='${data.tarifPerHari}'/>" min="0" step="any" placeholder="Contoh: 350000" required>
+            <div class="invalid-feedback"><c:out value="${errors.tarifPerHari}" /></div>
+            <div class="form-text">Tarif dalam Rupiah untuk satu malam menginap.</div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="statusRuangan">Status Ruangan <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.statusRuangan ? 'is-invalid' : ''}" id="statusRuangan" name="statusRuangan" required>
+                <option value="">Pilih status ruangan</option>
+                <option value="TERSEDIA" <c:if test="${data.statusRuangan eq 'TERSEDIA'}">selected</c:if>>Tersedia</option>
+                <option value="TERISI" <c:if test="${data.statusRuangan eq 'TERISI'}">selected</c:if>>Terisi</option>
+                <option value="PERAWATAN" <c:if test="${data.statusRuangan eq 'PERAWATAN'}">selected</c:if>>Perawatan</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.statusRuangan}" /></div>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="fasilitas">Fasilitas</label>
+            <textarea class="form-control" id="fasilitas" name="fasilitas" rows="2"
+                      placeholder="Contoh: AC, kipas angin, kamar mandi dalam, televisi"><c:out value='${data.fasilitas}'/></textarea>
+            <div class="form-text">Pisahkan setiap fasilitas dengan tanda koma.</div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Ruangan' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/ruangan"><i class="bi bi-arrow-left"></i>Kembali</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,19 @@
+</main>
+</div><!-- main-area -->
+</div><!-- app-wrapper -->
+
+<div class="modal-konfirmasi" id="modalKonfirmasi" hidden>
+    <div class="modal-konfirmasi-box">
+        <div class="modal-konfirmasi-ikon"><i class="bi bi-exclamation-triangle"></i></div>
+        <p class="modal-konfirmasi-teks" id="modalKonfirmasiTeks">Yakin melanjutkan aksi ini?</p>
+        <div class="modal-konfirmasi-aksi">
+            <button type="button" class="btn btn-secondary" id="modalKonfirmasiBatal">Batal</button>
+            <a href="#" class="btn btn-danger" id="modalKonfirmasiYa">Ya, Lanjutkan</a>
+        </div>
+    </div>
+</div>
+
+<script src="${ctx}/assets/js/bootstrap.bundle.min.js"></script>
+<script src="${ctx}/assets/js/app.js"></script>
+</body>
+</html>

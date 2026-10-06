@@ -1,0 +1,93 @@
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-virus"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/penyakit"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/penyakit" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idPenyakit}">
+
+        <div class="col-md-4">
+            <label class="form-label" for="kodePenyakit">Kode Penyakit <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.kodePenyakit ? 'is-invalid' : ''}" id="kodePenyakit" name="kodePenyakit"
+                   value="<c:out value='${data.kodePenyakit}'/>" maxlength="20" placeholder="Contoh: P-001" required>
+            <div class="invalid-feedback"><c:out value="${errors.kodePenyakit}" /></div>
+            <div class="form-text">Kode disimpan otomatis dengan huruf kapital dan tidak boleh sama.</div>
+        </div>
+        <div class="col-md-8">
+            <label class="form-label" for="namaPenyakit">Nama Penyakit <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.namaPenyakit ? 'is-invalid' : ''}" id="namaPenyakit" name="namaPenyakit"
+                   value="<c:out value='${data.namaPenyakit}'/>" maxlength="120" placeholder="Contoh: Demam Berdarah Dengue" required>
+            <div class="invalid-feedback"><c:out value="${errors.namaPenyakit}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="jenisPenyakit">Jenis Penyakit <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.jenisPenyakit ? 'is-invalid' : ''}" id="jenisPenyakit" name="jenisPenyakit"
+                   value="<c:out value='${data.jenisPenyakit}'/>" maxlength="80" placeholder="Contoh: Infeksi, Penyakit Dalam, Tropis" required>
+            <div class="invalid-feedback"><c:out value="${errors.jenisPenyakit}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="tingkatKeparahan">Tingkat Keparahan <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.tingkatKeparahan ? 'is-invalid' : ''}" id="tingkatKeparahan" name="tingkatKeparahan" required>
+                <option value="">Pilih tingkat keparahan</option>
+                <c:forEach items="${['RINGAN','SEDANG','BERAT','KRITIS']}" var="tk">
+                    <option value="${tk}" <c:if test="${data.tingkatKeparahan eq tk}">selected</c:if>>${tk}</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.tingkatKeparahan}" /></div>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="gejala">Gejala <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.gejala ? 'is-invalid' : ''}" id="gejala" name="gejala" rows="2"
+                      placeholder="Tuliskan gejala utama yang dirasakan pasien"><c:out value='${data.gejala}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.gejala}" /></div>
+        </div>
+        <div class="col-12">
+            <label class="form-label" for="penyebab">Penyebab</label>
+            <textarea class="form-control" id="penyebab" name="penyebab" rows="2"
+                      placeholder="Tuliskan penyebab atau faktor risiko penyakit"><c:out value='${data.penyebab}'/></textarea>
+        </div>
+        <div class="col-12">
+            <label class="form-label" for="penanganan">Penanganan <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.penanganan ? 'is-invalid' : ''}" id="penanganan" name="penanganan" rows="2"
+                      placeholder="Tuliskan langkah penanganan yang diberikan"><c:out value='${data.penanganan}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.penanganan}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="obatUtama">Obat Utama</label>
+            <input type="text" class="form-control" id="obatUtama" name="obatUtama"
+                   value="<c:out value='${data.obatUtama}'/>" maxlength="150" placeholder="Contoh: Parasetamol 500 mg">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="keterangan">Keterangan</label>
+            <input type="text" class="form-control" id="keterangan" name="keterangan"
+                   value="<c:out value='${data.keterangan}'/>" maxlength="200" placeholder="Keterangan tambahan bila ada">
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Penyakit' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/penyakit"><i class="bi bi-arrow-left"></i>Kembali</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,117 @@
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-clipboard2-pulse"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/pemeriksaan"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/pemeriksaan" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idPemeriksaan}">
+
+        <div class="col-md-6">
+            <label class="form-label" for="idPasien">Pasien <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.idPasien ? 'is-invalid' : ''}" id="idPasien" name="idPasien" required>
+                <option value="">Pilih pasien</option>
+                <c:forEach items="${daftarPasien}" var="ps">
+                    <option value="${ps.idPasien}" <c:if test="${data.idPasien eq ps.idPasien}">selected</c:if>>${ps.namaPasien} (${ps.nik})</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idPasien}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="idDokter">Dokter Pemeriksa <c:if test="${user.role ne 'DOKTER'}"><span class="wajib">*</span></c:if></label>
+            <select class="form-select ${not empty errors.idDokter ? 'is-invalid' : ''}" id="idDokter" name="idDokter" <c:if test="${user.role ne 'DOKTER'}">required</c:if>>
+                <option value="">Pilih dokter</option>
+                <c:forEach items="${daftarDokter}" var="dk">
+                    <option value="${dk.idDokter}" <c:if test="${data.idDokter eq dk.idDokter}">selected</c:if>>dr. ${dk.namaDokter} - ${dk.spesialisasi}</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idDokter}" /></div>
+            <div class="form-text">
+                <c:choose>
+                    <c:when test="${user.role eq 'DOKTER'}">Pemeriksaan akan selalu tercatat atas nama Anda dan hanya dapat Anda ubah sendiri.</c:when>
+                    <c:otherwise>Pilih dokter yang memeriksa pasien. Daftar berisi dokter berstatus aktif.</c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="tanggalPemeriksaan">Tanggal Pemeriksaan <span class="wajib">*</span></label>
+            <input type="date" class="form-control ${not empty errors.tanggalPemeriksaan ? 'is-invalid' : ''}" id="tanggalPemeriksaan" name="tanggalPemeriksaan"
+                   value="<c:out value='${empty data.tanggalPemeriksaan ? tanggalHariIni : data.tanggalPemeriksaan}'/>" required>
+            <div class="invalid-feedback"><c:out value="${errors.tanggalPemeriksaan}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="tekananDarah">Tekanan Darah</label>
+            <input type="text" class="form-control ${not empty errors.tekananDarah ? 'is-invalid' : ''}" id="tekananDarah" name="tekananDarah"
+                   value="<c:out value='${data.tekananDarah}'/>" placeholder="Contoh: 120/80" maxlength="7">
+            <div class="invalid-feedback"><c:out value="${errors.tekananDarah}" /></div>
+            <div class="form-text">Format angka/angka, contoh 120/80. Kosongkan bila tidak diperiksa.</div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="suhu">Suhu Tubuh (°C)</label>
+            <input type="number" class="form-control ${not empty errors.suhu ? 'is-invalid' : ''}" id="suhu" name="suhu"
+                   value="<c:out value='${data.suhu}'/>" step="0.1" min="30" max="45" placeholder="Contoh: 36.5">
+            <div class="invalid-feedback"><c:out value="${errors.suhu}" /></div>
+            <div class="form-text">Suhu harus antara 30 sampai 45 derajat Celcius.</div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="beratBadan">Berat Badan (kg)</label>
+            <input type="number" class="form-control ${not empty errors.beratBadan ? 'is-invalid' : ''}" id="beratBadan" name="beratBadan"
+                   value="<c:out value='${data.beratBadan}'/>" step="0.1" min="1" max="300" placeholder="Contoh: 62.5">
+            <div class="invalid-feedback"><c:out value="${errors.beratBadan}" /></div>
+            <div class="form-text">Berat badan harus antara 1 sampai 300 kg.</div>
+        </div>
+        <div class="col-md-8">
+            <label class="form-label" for="keluhan">Keluhan Pasien <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.keluhan ? 'is-invalid' : ''}" id="keluhan" name="keluhan" rows="2"
+                      placeholder="Keluhan utama yang disampaikan pasien" required><c:out value='${data.keluhan}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.keluhan}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="diagnosa">Diagnosa <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.diagnosa ? 'is-invalid' : ''}" id="diagnosa" name="diagnosa" rows="3"
+                      placeholder="Hasil diagnosa pasien" required><c:out value='${data.diagnosa}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.diagnosa}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="tindakan">Tindakan</label>
+            <textarea class="form-control ${not empty errors.tindakan ? 'is-invalid' : ''}" id="tindakan" name="tindakan" rows="3"
+                      placeholder="Tindakan yang diberikan kepada pasien"><c:out value='${data.tindakan}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.tindakan}" /></div>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="catatan">Catatan Tambahan</label>
+            <textarea class="form-control ${not empty errors.catatan ? 'is-invalid' : ''}" id="catatan" name="catatan" rows="2"
+                      placeholder="Catatan tambahan hasil pemeriksaan"><c:out value='${data.catatan}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.catatan}" /></div>
+            <div class="form-text">Isi catatan bila ada hal penting yang perlu dilanjutkan pada pemeriksaan berikutnya.</div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Pemeriksaan' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/pemeriksaan">Kembali</a>
+        </div>
+    </form>
+</div>

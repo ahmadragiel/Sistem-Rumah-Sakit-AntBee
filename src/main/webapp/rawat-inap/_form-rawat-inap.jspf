@@ -1,0 +1,113 @@
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-hospital-add"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/rawat-inap"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/rawat-inap" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idRawatInap}">
+
+        <div class="col-md-6">
+            <label class="form-label" for="idPasien">Pasien <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.idPasien ? 'is-invalid' : ''}" id="idPasien" name="idPasien" required>
+                <option value="">Pilih pasien</option>
+                <c:forEach items="${daftarPasien}" var="ps">
+                    <option value="${ps.idPasien}" <c:if test="${data.idPasien eq ps.idPasien}">selected</c:if>>${ps.namaPasien} (${ps.nik})</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idPasien}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="idDokter">Dokter Penanggung Jawab <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.idDokter ? 'is-invalid' : ''}" id="idDokter" name="idDokter" required>
+                <option value="">Pilih dokter</option>
+                <c:forEach items="${daftarDokter}" var="dk">
+                    <option value="${dk.idDokter}" <c:if test="${data.idDokter eq dk.idDokter}">selected</c:if>>dr. ${dk.namaDokter} - ${dk.spesialisasi}</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idDokter}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="idRuangan">Ruangan / Kamar <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.idRuangan ? 'is-invalid' : ''}" id="idRuangan" name="idRuangan" required>
+                <option value="">Pilih ruangan</option>
+                <c:forEach items="${daftarRuangan}" var="ru">
+                    <option value="${ru.idRuangan}" <c:if test="${data.idRuangan eq ru.idRuangan}">selected</c:if>>${ru.nomorKamar} - ${ru.namaRuangan} (${ru.jenisRuangan}) - sisa ${ru.sisaKapasitas} dari ${ru.kapasitas} bed</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idRuangan}" /></div>
+            <div class="form-text">Kapasitas kamar akan diperiksa sistem saat menyimpan. Kamar yang sudah penuh tidak dapat dipilih untuk status Dirawat.</div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="statusRawat">Status Rawat Inap <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.statusRawat ? 'is-invalid' : ''}" id="statusRawat" name="statusRawat" required>
+                <option value="">Pilih status</option>
+                <option value="MENUNGGU" <c:if test="${data.statusRawat eq 'MENUNGGU'}">selected</c:if>>Menunggu</option>
+                <option value="DIRAWAT" <c:if test="${data.statusRawat eq 'DIRAWAT'}">selected</c:if>>Dirawat</option>
+                <option value="SELESAI" <c:if test="${data.statusRawat eq 'SELESAI'}">selected</c:if>>Selesai</option>
+                <option value="DIPULANGKAN" <c:if test="${data.statusRawat eq 'DIPULANGKAN'}">selected</c:if>>Dipulangkan</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.statusRawat}" /></div>
+            <div class="form-text">Status Dirawat menempati satu bed kamar. Status Selesai atau Dipulangkan wajib memiliki tanggal keluar.</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="tanggalMasuk">Tanggal Masuk <span class="wajib">*</span></label>
+            <input type="date" class="form-control ${not empty errors.tanggalMasuk ? 'is-invalid' : ''}" id="tanggalMasuk" name="tanggalMasuk"
+                   value="<c:out value='${empty data.tanggalMasuk ? tanggalHariIni : data.tanggalMasuk}'/>" required>
+            <div class="invalid-feedback"><c:out value="${errors.tanggalMasuk}" /></div>
+            <div class="form-text">Lama rawat dihitung sistem dari tanggal masuk, minimal 1 hari.</div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="tanggalKeluar">Tanggal Keluar</label>
+            <input type="date" class="form-control ${not empty errors.tanggalKeluar ? 'is-invalid' : ''}" id="tanggalKeluar" name="tanggalKeluar"
+                   value="<c:out value='${data.tanggalKeluar}'/>">
+            <div class="invalid-feedback"><c:out value="${errors.tanggalKeluar}" /></div>
+            <div class="form-text">Tanggal keluar tidak boleh sebelum tanggal masuk. Kosongkan jika pasien masih dirawat.</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="diagnosa">Diagnosa <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.diagnosa ? 'is-invalid' : ''}" id="diagnosa" name="diagnosa" rows="3"
+                      placeholder="Hasil diagnosa utama pasien" required><c:out value='${data.diagnosa}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.diagnosa}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="keluhan">Keluhan Pasien</label>
+            <textarea class="form-control ${not empty errors.keluhan ? 'is-invalid' : ''}" id="keluhan" name="keluhan" rows="3"
+                      placeholder="Keluhan yang dirasakan pasien saat masuk"><c:out value='${data.keluhan}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.keluhan}" /></div>
+        </div>
+
+        <div class="col-12">
+            <div class="panel-error mb-0" style="background:#FBF3EC;border-color:#E8D8C8;color:#7A1C1C;">
+                <i class="bi bi-info-circle me-2"></i>
+                Perubahan status rawat inap akan menyesuaikan jumlah terisi kamar dan status pasien secara otomatis oleh sistem.
+            </div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Rawat Inap' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/rawat-inap">Kembali</a>
+        </div>
+    </form>
+</div>

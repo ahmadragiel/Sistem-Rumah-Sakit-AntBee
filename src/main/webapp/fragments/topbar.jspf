@@ -1,0 +1,36 @@
+<header class="topbar">
+    <button class="btn btn-link tombol-menu" id="menuToggle" type="button" aria-label="Buka menu">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="topbar-judul">
+        <div class="breadcrumb-kecil">
+            <a href="${ctx}/dashboard">Beranda</a>
+            <i class="bi bi-chevron-right"></i>
+            <span><c:out value="${judulHalaman}" /></span>
+        </div>
+        <h1 class="topbar-h1"><c:out value="${judulHalaman}" /></h1>
+    </div>
+
+    <div class="topbar-kanan">
+        <div class="chip-user d-none d-sm-flex">
+            <div class="user-avatar kecil"><c:out value="${fn:substring(user.namaLengkap,0,1)}" /></div>
+            <div class="user-info">
+                <span class="user-name"><c:out value="${user.namaLengkap}" /></span>
+                <span class="user-role">${user.role}</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<c:if test="${not empty sessionScope.pesan}">
+    <div class="w-100 px-3 pt-3">
+        <div class="alert alert-${sessionScope.tipePesan eq 'gagal' ? 'danger' : 'success'} alert-dismissible fade show" role="alert">
+            <i class="bi ${sessionScope.tipePesan eq 'gagal' ? 'bi-exclamation-triangle' : 'bi-check-circle'} me-2"></i>
+            <c:out value="${sessionScope.pesan}" />
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    </div>
+    <c:remove var="pesan" scope="session" />
+    <c:remove var="tipePesan" scope="session" />
+</c:if>

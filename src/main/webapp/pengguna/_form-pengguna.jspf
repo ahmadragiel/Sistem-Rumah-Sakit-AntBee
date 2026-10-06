@@ -1,0 +1,108 @@
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-person-gear"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/pengguna"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/pengguna" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idPengguna}">
+
+        <div class="col-md-6">
+            <label class="form-label" for="username">Username <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.username ? 'is-invalid' : ''}" id="username" name="username"
+                   value="<c:out value='${data.username}'/>" maxlength="50" placeholder="Minimal 4 karakter, huruf, angka, titik, atau garis bawah" autocomplete="off" required>
+            <div class="invalid-feedback"><c:out value="${errors.username}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="namaLengkap">Nama Lengkap <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.namaLengkap ? 'is-invalid' : ''}" id="namaLengkap" name="namaLengkap"
+                   value="<c:out value='${data.namaLengkap}'/>" placeholder="Nama lengkap sesuai identitas" required>
+            <div class="invalid-feedback"><c:out value="${errors.namaLengkap}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="email">Email</label>
+            <input type="email" class="form-control ${not empty errors.email ? 'is-invalid' : ''}" id="email" name="email"
+                   value="<c:out value='${data.email}'/>" placeholder="Contoh: nama@sehatsentosa.id">
+            <div class="invalid-feedback"><c:out value="${errors.email}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="noTelepon">No. Telepon</label>
+            <input type="text" class="form-control ${not empty errors.noTelepon ? 'is-invalid' : ''}" id="noTelepon" name="noTelepon"
+                   value="<c:out value='${data.noTelepon}'/>" placeholder="Contoh: 081234567890">
+            <div class="invalid-feedback"><c:out value="${errors.noTelepon}" /></div>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="alamat">Alamat</label>
+            <textarea class="form-control" id="alamat" name="alamat" rows="2"
+                      placeholder="Alamat lengkap domisili"><c:out value='${data.alamat}'/></textarea>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="role">Role <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.role ? 'is-invalid' : ''}" id="role" name="role" required>
+                <option value="">Pilih role</option>
+                <option value="ADMIN" <c:if test="${data.role eq 'ADMIN'}">selected</c:if>>Administrator</option>
+                <option value="DOKTER" <c:if test="${data.role eq 'DOKTER'}">selected</c:if>>Dokter</option>
+                <option value="PERAWAT" <c:if test="${data.role eq 'PERAWAT'}">selected</c:if>>Perawat</option>
+                <option value="PETUGAS" <c:if test="${data.role eq 'PETUGAS'}">selected</c:if>>Petugas</option>
+                <option value="PASIEN" <c:if test="${data.role eq 'PASIEN'}">selected</c:if>>Pasien</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.role}" /></div>
+            <div class="form-text">Role menentukan menu dan kewenangan akun saat masuk ke aplikasi.</div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="status">Status Akun <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.status ? 'is-invalid' : ''}" id="status" name="status" required>
+                <option value="">Pilih status</option>
+                <option value="AKTIF" <c:if test="${data.status eq 'AKTIF'}">selected</c:if>>Aktif</option>
+                <option value="NONAKTIF" <c:if test="${data.status eq 'NONAKTIF'}">selected</c:if>>Nonaktif</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.status}" /></div>
+            <div class="form-text">Akun nonaktif tidak dapat digunakan untuk masuk ke aplikasi.</div>
+        </div>
+
+        <div class="col-12">
+            <h6 class="text-uppercase text-muted fw-bold mb-2">Kata Sandi</h6>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="password">Password <span class="wajib"><c:if test="${aksiForm eq 'simpan'}">*</c:if></span></label>
+            <input type="password" class="form-control ${not empty errors.password ? 'is-invalid' : ''}" id="password" name="password"
+                   placeholder="Minimal 6 karakter" autocomplete="new-password" <c:if test="${aksiForm eq 'simpan'}">required</c:if>>
+            <div class="invalid-feedback"><c:out value="${errors.password}" /></div>
+            <c:if test="${aksiForm eq 'update'}">
+                <div class="form-text">Kosongkan bila password tidak ingin diubah.</div>
+            </c:if>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="ulangiPassword">Ulangi Password <span class="wajib"><c:if test="${aksiForm eq 'simpan'}">*</c:if></span></label>
+            <input type="password" class="form-control ${not empty errors.ulangiPassword ? 'is-invalid' : ''}" id="ulangiPassword" name="ulangiPassword"
+                   placeholder="Ketik ulang password yang sama" autocomplete="new-password" <c:if test="${aksiForm eq 'simpan'}">required</c:if>>
+            <div class="invalid-feedback"><c:out value="${errors.ulangiPassword}" /></div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Pengguna' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/pengguna">Batal</a>
+        </div>
+    </form>
+</div>

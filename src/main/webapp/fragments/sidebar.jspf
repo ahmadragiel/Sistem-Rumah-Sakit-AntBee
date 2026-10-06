@@ -1,0 +1,119 @@
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <img class="logo-sidebar" src="${ctx}/assets/img/logoo.png" alt="RS AntBee">
+        <div class="brand-text">
+            <span class="brand-title">SIMRS</span>
+            <span class="brand-sub">RS AntBee</span>
+        </div>
+        <button class="btn btn-sm btn-link sidebar-close d-lg-none" id="sidebarClose" type="button" aria-label="Tutup menu">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="user-avatar"><c:out value="${fn:substring(user.namaLengkap,0,1)}" /></div>
+        <div class="user-info">
+            <span class="user-name"><c:out value="${user.namaLengkap}" /></span>
+            <span class="user-role">${user.role}</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-label">Menu Utama</div>
+
+        <a class="nav-item <c:if test='${menuAktif eq "dashboard"}'>active</c:if>" href="${ctx}/dashboard">
+            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+        </a>
+
+        <c:choose>
+            <c:when test="${user.role eq 'ADMIN'}">
+                <div class="nav-label">Master Data</div>
+                <a class="nav-item <c:if test='${menuAktif eq "pasien"}'>active</c:if>" href="${ctx}/pasien">
+                    <i class="bi bi-people"></i><span>Pasien</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "dokter"}'>active</c:if>" href="${ctx}/dokter">
+                    <i class="bi bi-person-badge"></i><span>Dokter</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "perawat"}'>active</c:if>" href="${ctx}/perawat">
+                    <i class="bi bi-person-workspace"></i><span>Perawat</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "penyakit"}'>active</c:if>" href="${ctx}/penyakit">
+                    <i class="bi bi-virus"></i><span>Penyakit</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "ruangan"}'>active</c:if>" href="${ctx}/ruangan">
+                    <i class="bi bi-door-open"></i><span>Ruangan</span></a>
+
+                <div class="nav-label">Layanan</div>
+                <a class="nav-item <c:if test='${menuAktif eq "rawat-inap"}'>active</c:if>" href="${ctx}/rawat-inap">
+                    <i class="bi bi-hospital"></i><span>Rawat Inap</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pemeriksaan"}'>active</c:if>" href="${ctx}/pemeriksaan">
+                    <i class="bi bi-clipboard2-pulse"></i><span>Pemeriksaan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "catatan-perawatan"}'>active</c:if>" href="${ctx}/catatan-perawatan">
+                    <i class="bi bi-journal-medical"></i><span>Catatan Perawatan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pembayaran"}'>active</c:if>" href="${ctx}/pembayaran">
+                    <i class="bi bi-credit-card"></i><span>Pembayaran</span></a>
+
+                <div class="nav-label">Administrasi</div>
+                <a class="nav-item <c:if test='${menuAktif eq "pengguna"}'>active</c:if>" href="${ctx}/pengguna">
+                    <i class="bi bi-person-gear"></i><span>Pengguna</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "laporan"}'>active</c:if>" href="${ctx}/laporan">
+                    <i class="bi bi-file-earmark-text"></i><span>Laporan</span></a>
+            </c:when>
+
+            <c:when test="${user.role eq 'DOKTER'}">
+                <div class="nav-label">Layanan Medis</div>
+                <a class="nav-item <c:if test='${menuAktif eq "pasien"}'>active</c:if>" href="${ctx}/pasien">
+                    <i class="bi bi-people"></i><span>Pasien Saya</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pemeriksaan"}'>active</c:if>" href="${ctx}/pemeriksaan">
+                    <i class="bi bi-clipboard2-pulse"></i><span>Pemeriksaan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "catatan-perawatan"}'>active</c:if>" href="${ctx}/catatan-perawatan">
+                    <i class="bi bi-journal-medical"></i><span>Catatan Perawatan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "rawat-inap"}'>active</c:if>" href="${ctx}/rawat-inap">
+                    <i class="bi bi-hospital"></i><span>Rawat Inap</span></a>
+            </c:when>
+
+            <c:when test="${user.role eq 'PERAWAT'}">
+                <div class="nav-label">Perawatan Pasien</div>
+                <a class="nav-item <c:if test='${menuAktif eq "rawat-inap"}'>active</c:if>" href="${ctx}/rawat-inap">
+                    <i class="bi bi-hospital"></i><span>Pasien Rawat Inap</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "catatan-perawatan"}'>active</c:if>" href="${ctx}/catatan-perawatan">
+                    <i class="bi bi-journal-medical"></i><span>Catatan Perawatan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pasien"}'>active</c:if>" href="${ctx}/pasien">
+                    <i class="bi bi-people"></i><span>Data Pasien</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "ruangan"}'>active</c:if>" href="${ctx}/ruangan">
+                    <i class="bi bi-door-open"></i><span>Ruangan</span></a>
+            </c:when>
+
+            <c:when test="${user.role eq 'PETUGAS'}">
+                <div class="nav-label">Administrasi</div>
+                <a class="nav-item" href="${ctx}/pasien?aksi=tambah">
+                    <i class="bi bi-person-plus"></i><span>Registrasi Pasien</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pasien"}'>active</c:if>" href="${ctx}/pasien">
+                    <i class="bi bi-people"></i><span>Data Pasien</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "rawat-inap"}'>active</c:if>" href="${ctx}/rawat-inap">
+                    <i class="bi bi-hospital"></i><span>Rawat Inap</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pembayaran"}'>active</c:if>" href="${ctx}/pembayaran">
+                    <i class="bi bi-credit-card"></i><span>Pembayaran</span></a>
+            </c:when>
+
+            <c:when test="${user.role eq 'PASIEN'}">
+                <div class="nav-label">Layanan Saya</div>
+                <a class="nav-item <c:if test='${menuAktif eq "jadwal"}'>active</c:if>" href="${ctx}/saya">
+                    <i class="bi bi-calendar-check"></i><span>Jadwal Pemeriksaan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pemeriksaan"}'>active</c:if>" href="${ctx}/saya?aksi=pemeriksaan">
+                    <i class="bi bi-clipboard2-pulse"></i><span>Riwayat Pemeriksaan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "rawat-inap"}'>active</c:if>" href="${ctx}/saya?aksi=rawat-inap">
+                    <i class="bi bi-hospital"></i><span>Riwayat Rawat Inap</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "pembayaran"}'>active</c:if>" href="${ctx}/saya?aksi=pembayaran">
+                    <i class="bi bi-credit-card"></i><span>Pembayaran</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "tagihan"}'>active</c:if>" href="${ctx}/saya?aksi=tagihan">
+                    <i class="bi bi-receipt"></i><span>Tagihan</span></a>
+                <a class="nav-item <c:if test='${menuAktif eq "notifikasi"}'>active</c:if>" href="${ctx}/saya?aksi=notifikasi">
+                    <i class="bi bi-bell"></i><span>Notifikasi</span></a>
+            </c:when>
+        </c:choose>
+
+        <div class="nav-label">Akun</div>
+        <a class="nav-item <c:if test='${menuAktif eq "profil"}'>active</c:if>" href="${ctx}/profil">
+            <i class="bi bi-person-circle"></i><span>Profil</span></a>
+        <a class="nav-item nav-keluar" href="${ctx}/logout" data-konfirmasi="Yakin ingin keluar dari aplikasi?">
+            <i class="bi bi-box-arrow-right"></i><span>Keluar</span></a>
+    </nav>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

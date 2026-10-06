@@ -1,0 +1,137 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-credit-card"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi. Total biaya dihitung otomatis oleh sistem.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/pembayaran"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/pembayaran" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idPembayaran}">
+
+        <div class="col-md-6">
+            <label class="form-label" for="idPasien">Pasien <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.idPasien ? 'is-invalid' : ''}" id="idPasien" name="idPasien" required>
+                <option value="">Pilih pasien</option>
+                <c:forEach items="${daftarPasien}" var="ps">
+                    <option value="${ps.idPasien}" <c:if test="${data.idPasien eq ps.idPasien}">selected</c:if>>${ps.namaPasien} (${ps.nik})</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idPasien}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="idRawatInap">Rawat Inap Terkait</label>
+            <select class="form-select ${not empty errors.idRawatInap ? 'is-invalid' : ''}" id="idRawatInap" name="idRawatInap">
+                <option value="" data-tarif="0" data-lama="0">Tidak terkait rawat inap</option>
+                <c:forEach items="${daftarRawatInap}" var="ri">
+                    <option value="${ri.idRawatInap}" data-tarif="0" data-lama="${empty ri.lamaRawat ? 0 : ri.lamaRawat}"
+                            <c:if test="${data.idRawatInap eq ri.idRawatInap}">selected</c:if>>${empty ri.namaPasien ? 'Pasien' : ri.namaPasien} - kamar ${empty ri.nomorKamar ? '-' : ri.nomorKamar} (${empty ri.namaRuangan ? 'ruangan tidak diketahui' : ri.namaRuangan}) - lama ${empty ri.lamaRawat ? 1 : ri.lamaRawat} hari</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idRawatInap}" /></div>
+            <div class="form-text">Pilih rawat inap agar biaya kamar dapat dihitung sistem dari tarif kamar dikali lama rawat.</div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="metodePembayaran">Metode Pembayaran <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.metodePembayaran ? 'is-invalid' : ''}" id="metodePembayaran" name="metodePembayaran" required>
+                <option value="">Pilih metode pembayaran</option>
+                <option value="Tunai" <c:if test="${data.metodePembayaran eq 'Tunai'}">selected</c:if>>Tunai</option>
+                <option value="Transfer Bank" <c:if test="${data.metodePembayaran eq 'Transfer Bank'}">selected</c:if>>Transfer Bank</option>
+                <option value="Kartu Debit" <c:if test="${data.metodePembayaran eq 'Kartu Debit'}">selected</c:if>>Kartu Debit</option>
+                <option value="QRIS" <c:if test="${data.metodePembayaran eq 'QRIS'}">selected</c:if>>QRIS</option>
+                <option value="BPJS" <c:if test="${data.metodePembayaran eq 'BPJS'}">selected</c:if>>BPJS</option>
+                <option value="Asuransi" <c:if test="${data.metodePembayaran eq 'Asuransi'}">selected</c:if>>Asuransi</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.metodePembayaran}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="tanggalPembayaran">Tanggal Pembayaran <span class="wajib">*</span></label>
+            <input type="date" class="form-control ${not empty errors.tanggalPembayaran ? 'is-invalid' : ''}" id="tanggalPembayaran" name="tanggalPembayaran"
+                   value="<c:out value='${empty data.tanggalPembayaran ? tanggalHariIni : data.tanggalPembayaran}'/>" required>
+            <div class="invalid-feedback"><c:out value="${errors.tanggalPembayaran}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="statusPembayaran">Status Pembayaran <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.statusPembayaran ? 'is-invalid' : ''}" id="statusPembayaran" name="statusPembayaran" required>
+                <option value="">Pilih status pembayaran</option>
+                <option value="BELUM DIBAYAR" <c:if test="${data.statusPembayaran eq 'BELUM DIBAYAR'}">selected</c:if>>Belum Dibayar</option>
+                <option value="MENUNGGU" <c:if test="${data.statusPembayaran eq 'MENUNGGU'}">selected</c:if>>Menunggu</option>
+                <option value="LUNAS" <c:if test="${data.statusPembayaran eq 'LUNAS'}">selected</c:if>>Lunas</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.statusPembayaran}" /></div>
+        </div>
+
+        <div class="col-12">
+            <h6 class="text-uppercase text-muted fw-bold mb-2">Rincian Biaya</h6>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="biayaKamar">Biaya Kamar (Rp)</label>
+            <input type="number" class="form-control ${not empty errors.biayaKamar ? 'is-invalid' : ''}" id="biayaKamar" name="biayaKamar" data-biaya
+                   min="0" step="1" value="<c:out value='${data.biayaKamar}'/>" placeholder="0">
+            <div class="invalid-feedback"><c:out value="${errors.biayaKamar}" /></div>
+            <div class="form-text">Kosongkan bila biaya kamar ingin dihitung sistem dari pilihan rawat inap.</div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="biayaDokter">Biaya Dokter (Rp)</label>
+            <input type="number" class="form-control ${not empty errors.biayaDokter ? 'is-invalid' : ''}" id="biayaDokter" name="biayaDokter" data-biaya
+                   min="0" step="1" value="<c:out value='${data.biayaDokter}'/>" placeholder="0">
+            <div class="invalid-feedback"><c:out value="${errors.biayaDokter}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="biayaObat">Biaya Obat (Rp)</label>
+            <input type="number" class="form-control ${not empty errors.biayaObat ? 'is-invalid' : ''}" id="biayaObat" name="biayaObat" data-biaya
+                   min="0" step="1" value="<c:out value='${data.biayaObat}'/>" placeholder="0">
+            <div class="invalid-feedback"><c:out value="${errors.biayaObat}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="biayaTindakan">Biaya Tindakan (Rp)</label>
+            <input type="number" class="form-control ${not empty errors.biayaTindakan ? 'is-invalid' : ''}" id="biayaTindakan" name="biayaTindakan" data-biaya
+                   min="0" step="1" value="<c:out value='${data.biayaTindakan}'/>" placeholder="0">
+            <div class="invalid-feedback"><c:out value="${errors.biayaTindakan}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="biayaLain">Biaya Lain (Rp)</label>
+            <input type="number" class="form-control ${not empty errors.biayaLain ? 'is-invalid' : ''}" id="biayaLain" name="biayaLain" data-biaya
+                   min="0" step="1" value="<c:out value='${data.biayaLain}'/>" placeholder="0">
+            <div class="invalid-feedback"><c:out value="${errors.biayaLain}" /></div>
+        </div>
+        <div class="col-md-4 d-flex align-items-center">
+            <div class="detail-baris w-100 mb-0">
+                <span class="label">Total Biaya (dihitung sistem)</span>
+                <span class="nilai"><span id="pratinjauTotal">Rp&nbsp;<fmt:formatNumber value="${empty data.totalBiaya ? 0 : data.totalBiaya}" type="number" maxFractionDigits="0" /></span></span>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="panel-error mb-0" style="background:#FBF3EC;border-color:#E8D8C8;color:#7A1C1C;">
+                <i class="bi bi-info-circle me-2"></i>
+                Total biaya dihitung sistem dari kelima komponen biaya di atas, sehingga kolom total tidak dapat diubah manual.
+            </div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Pembayaran' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/pembayaran">Kembali</a>
+        </div>
+    </form>
+</div>

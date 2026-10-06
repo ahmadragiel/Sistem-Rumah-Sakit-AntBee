@@ -1,0 +1,143 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-person-badge"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/dokter"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/dokter" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idDokter}">
+
+        <div class="col-md-6">
+            <label class="form-label" for="nip">NIP <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.nip ? 'is-invalid' : ''}" id="nip" name="nip"
+                   value="<c:out value='${data.nip}'/>" placeholder="Minimal 5 karakter" required>
+            <div class="invalid-feedback"><c:out value="${errors.nip}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="namaDokter">Nama Dokter <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.namaDokter ? 'is-invalid' : ''}" id="namaDokter" name="namaDokter"
+                   value="<c:out value='${data.namaDokter}'/>" placeholder="Contoh: dr. Andi Pratama, Sp.P" required>
+            <div class="invalid-feedback"><c:out value="${errors.namaDokter}" /></div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="jenisKelamin">Jenis Kelamin <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.jenisKelamin ? 'is-invalid' : ''}" id="jenisKelamin" name="jenisKelamin" required>
+                <option value="">Pilih jenis kelamin</option>
+                <option value="Laki-laki" <c:if test="${data.jenisKelamin eq 'Laki-laki'}">selected</c:if>>Laki-laki</option>
+                <option value="Perempuan" <c:if test="${data.jenisKelamin eq 'Perempuan'}">selected</c:if>>Perempuan</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.jenisKelamin}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="tempatLahir">Tempat Lahir <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.tempatLahir ? 'is-invalid' : ''}" id="tempatLahir" name="tempatLahir"
+                   value="<c:out value='${data.tempatLahir}'/>" placeholder="Contoh: Yogyakarta" required>
+            <div class="invalid-feedback"><c:out value="${errors.tempatLahir}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="tanggalLahir">Tanggal Lahir</label>
+            <input type="date" class="form-control ${not empty errors.tanggalLahir ? 'is-invalid' : ''}" id="tanggalLahir" name="tanggalLahir"
+                   value="<c:out value='${data.tanggalLahir}'/>">
+            <div class="invalid-feedback"><c:out value="${errors.tanggalLahir}" /></div>
+            <div class="form-text">Boleh dikosongkan jika data tanggal lahir belum tersedia.</div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="spesialisasi">Spesialisasi <span class="wajib">*</span></label>
+            <input type="text" class="form-control ${not empty errors.spesialisasi ? 'is-invalid' : ''}" id="spesialisasi" name="spesialisasi"
+                   value="<c:out value='${data.spesialisasi}'/>" placeholder="Contoh: Penyakit Dalam" required>
+            <div class="invalid-feedback"><c:out value="${errors.spesialisasi}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="jadwalPraktik">Jadwal Praktik</label>
+            <input type="text" class="form-control" id="jadwalPraktik" name="jadwalPraktik"
+                   value="<c:out value='${data.jadwalPraktik}'/>" placeholder="Contoh: Senin - Jumat, 08.00 - 14.00">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label" for="noTelepon">No. Telepon</label>
+            <input type="text" class="form-control ${not empty errors.noTelepon ? 'is-invalid' : ''}" id="noTelepon" name="noTelepon"
+                   value="<c:out value='${data.noTelepon}'/>" placeholder="Contoh: 081234567890">
+            <div class="invalid-feedback"><c:out value="${errors.noTelepon}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="email">Email</label>
+            <input type="text" class="form-control ${not empty errors.email ? 'is-invalid' : ''}" id="email" name="email"
+                   value="<c:out value='${data.email}'/>" placeholder="Contoh: dokter@rssihat.id">
+            <div class="invalid-feedback"><c:out value="${errors.email}" /></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="status">Status Dokter <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.status ? 'is-invalid' : ''}" id="status" name="status" required>
+                <option value="">Pilih status</option>
+                <option value="AKTIF" <c:if test="${data.status eq 'AKTIF'}">selected</c:if>>Aktif</option>
+                <option value="NONAKTIF" <c:if test="${data.status eq 'NONAKTIF'}">selected</c:if>>Nonaktif</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.status}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="idPengguna">Akun Login Dokter</label>
+            <select class="form-select ${not empty errors.idPengguna ? 'is-invalid' : ''}" id="idPengguna" name="idPengguna">
+                <option value="">Belum memiliki akun</option>
+                <c:forEach items="${daftarAkunDokter}" var="ak">
+                    <option value="${ak.idPengguna}" <c:if test="${data.idPengguna eq ak.idPengguna}">selected</c:if>>${ak.username} - ${ak.namaLengkap}</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idPengguna}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="alamat">Alamat</label>
+            <textarea class="form-control" id="alamat" name="alamat" rows="2"
+                      placeholder="Alamat domisili dokter"><c:out value='${data.alamat}'/></textarea>
+        </div>
+
+        <c:if test="${aksiForm eq 'simpan'}">
+            <div class="col-12">
+                <div class="panel-error mb-0" style="background:#FBF3EC;border-color:#E8D8C8;color:#7A1C1C;">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Isi <strong>username</strong> dan <strong>password</strong> di bawah hanya jika dokter baru juga memerlukan akun untuk login ke aplikasi.
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="usernameAkun">Username Akun Baru</label>
+                <input type="text" class="form-control ${not empty errors.usernameAkun ? 'is-invalid' : ''}" id="usernameAkun" name="usernameAkun"
+                       placeholder="Contoh: dokter01" autocomplete="off">
+                <div class="invalid-feedback"><c:out value="${errors.usernameAkun}" /></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="passwordAkun">Password Akun Baru</label>
+                <input type="password" class="form-control ${not empty errors.passwordAkun ? 'is-invalid' : ''}" id="passwordAkun" name="passwordAkun"
+                       placeholder="Minimal 6 karakter" autocomplete="new-password">
+                <div class="invalid-feedback"><c:out value="${errors.passwordAkun}" /></div>
+            </div>
+        </c:if>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Dokter' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/dokter">Batal</a>
+        </div>
+    </form>
+</div>

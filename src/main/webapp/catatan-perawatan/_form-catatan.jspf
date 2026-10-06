@@ -1,0 +1,110 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<div class="kartu">
+    <div class="kartu-kepala">
+        <div>
+            <h2 class="kartu-judul"><i class="bi bi-journal-medical"></i><c:out value="${judulForm}" /></h2>
+            <p class="kartu-sub">Kolom bertanda <span class="wajib">*</span> wajib diisi.</p>
+        </div>
+        <a class="btn btn-light" href="${ctx}/catatan-perawatan"><i class="bi bi-arrow-left"></i>Kembali</a>
+    </div>
+
+    <c:if test="${not empty pesanError}">
+        <div class="panel-error"><i class="bi bi-exclamation-triangle me-2"></i><c:out value="${pesanError}" /></div>
+    </c:if>
+    <c:if test="${not empty errors}">
+        <div class="panel-error">
+            <strong>Perbaiki data berikut:</strong>
+            <ul class="mt-1">
+                <c:forEach items="${errors}" var="e">
+                    <li><c:out value="${e.value}" /></li>
+                </c:forEach>
+            </ul>
+        </div>
+    </c:if>
+
+    <form method="post" action="${ctx}/catatan-perawatan" class="row g-3">
+        <input type="hidden" name="aksi" value="${aksiForm}">
+        <input type="hidden" name="id" value="${data.idCatatan}">
+
+        <div class="col-md-6">
+            <label class="form-label" for="idPasien">Pasien <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.idPasien ? 'is-invalid' : ''}" id="idPasien" name="idPasien" required>
+                <option value="">Pilih pasien</option>
+                <c:forEach items="${daftarPasien}" var="ps">
+                    <option value="${ps.idPasien}" <c:if test="${data.idPasien eq ps.idPasien}">selected</c:if>>${ps.namaPasien} (${ps.nik})</option>
+                </c:forEach>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.idPasien}" /></div>
+        </div>
+
+        <c:choose>
+            <c:when test="${user.role eq 'ADMIN'}">
+                <div class="col-md-6">
+                    <label class="form-label" for="idPerawat">Perawat Pelapor <span class="wajib">*</span></label>
+                    <select class="form-select ${not empty errors.idPerawat ? 'is-invalid' : ''}" id="idPerawat" name="idPerawat" required>
+                        <option value="">Pilih perawat</option>
+                        <c:forEach items="${daftarPerawat}" var="w">
+                            <option value="${w.idPerawat}" <c:if test="${data.idPerawat eq w.idPerawat}">selected</c:if>>${w.namaPerawat} (${w.nip})</option>
+                        </c:forEach>
+                    </select>
+                    <div class="invalid-feedback"><c:out value="${errors.idPerawat}" /></div>
+                    <div class="form-text">Pilih perawat yang membuat catatan. Daftar berisi perawat berstatus aktif.</div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="col-md-6">
+                    <label class="form-label" for="idPerawat">Perawat Pelapor</label>
+                    <div class="panel-error mb-0" style="background:#FBF3EC;border-color:#E8D8C8;color:#7A1C1C;">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Catatan ini akan tercatat atas nama Anda sebagai perawat penanggung jawab pasien.
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+
+        <div class="col-md-6">
+            <label class="form-label" for="tanggal">Tanggal Catatan <span class="wajib">*</span></label>
+            <input type="date" class="form-control ${not empty errors.tanggal ? 'is-invalid' : ''}" id="tanggal" name="tanggal"
+                   value="<c:out value='${empty data.tanggal ? tanggalHariIni : data.tanggal}'/>" required>
+            <div class="invalid-feedback"><c:out value="${errors.tanggal}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="status">Status Kondisi <span class="wajib">*</span></label>
+            <select class="form-select ${not empty errors.status ? 'is-invalid' : ''}" id="status" name="status" required>
+                <option value="">Pilih status kondisi</option>
+                <option value="BAIK" <c:if test="${data.status eq 'BAIK'}">selected</c:if>>Baik</option>
+                <option value="SEDANG" <c:if test="${data.status eq 'SEDANG'}">selected</c:if>>Sedang</option>
+                <option value="KRITIS" <c:if test="${data.status eq 'KRITIS'}">selected</c:if>>Kritis</option>
+            </select>
+            <div class="invalid-feedback"><c:out value="${errors.status}" /></div>
+            <div class="form-text">Status KRITIS menandakan pasien memerlukan penanganan segera.</div>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="kondisiPasien">Kondisi Pasien <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.kondisiPasien ? 'is-invalid' : ''}" id="kondisiPasien" name="kondisiPasien" rows="2"
+                      placeholder="Kondisi umum pasien saat dicatat, contoh: Sadar penuh, demam menurun" required><c:out value='${data.kondisiPasien}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.kondisiPasien}" /></div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" for="catatan">Catatan <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.catatan ? 'is-invalid' : ''}" id="catatan" name="catatan" rows="4"
+                      placeholder="Catatan perkembangan pasien selama perawatan" required><c:out value='${data.catatan}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.catatan}" /></div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="tindakan">Tindakan <span class="wajib">*</span></label>
+            <textarea class="form-control ${not empty errors.tindakan ? 'is-invalid' : ''}" id="tindakan" name="tindakan" rows="4"
+                      placeholder="Tindakan yang telah diberikan kepada pasien" required><c:out value='${data.tindakan}'/></textarea>
+            <div class="invalid-feedback"><c:out value="${errors.tindakan}" /></div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i>${aksiForm eq 'simpan' ? 'Simpan Catatan' : 'Perbarui Data'}</button>
+            <a class="btn btn-light" href="${ctx}/catatan-perawatan">Kembali</a>
+        </div>
+    </form>
+</div>

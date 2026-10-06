@@ -1,0 +1,23 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}" scope="request" />
+<fmt:setLocale value="id_ID" scope="request" />
+<c:if test="${empty judulHalaman}"><c:set var="judulHalaman" value="Dashboard" scope="request" /></c:if>
+<c:if test="${empty menuAktif}"><c:set var="menuAktif" value="" scope="request" /></c:if>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><c:out value="${judulHalaman}" /> - RS AntBee</title>
+<link rel="stylesheet" href="${ctx}/assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx}/assets/css/bootstrap-icons.min.css">
+<link rel="stylesheet" href="${ctx}/assets/css/style.css">
+</head>
+<body>
+<div class="app-wrapper">
+<%@ include file="/fragments/sidebar.jspf" %>
+<div class="main-area">
+<%@ include file="/fragments/topbar.jspf" %>
+<main class="content">
